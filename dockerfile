@@ -2,22 +2,20 @@
 FROM rockylinux/rockylinux:latest
 
 # Install dependencies
-RUN yum update -y && \
-    yum install -y wget unzip make gcc gcc-c++ zlib-devel bzip2-devel xz-devel
+RUN dnf update -y && \
+    dnf install -y git make cmake gcc-c++ boost boost-devel zlib-devel && \
+    dnf clean all
 
-# Download and extract Raven
-RUN wget https://github.com/lbcb-sci/raven/releases/download/v1.0.1/raven-1.0.1.zip && \
-    unzip raven-1.0.1.zip && \
-    rm raven-1.0.1.zip
-
-# Set working directory
-WORKDIR /raven-1.0.1
+# Clone Raven repository
+RUN git clone https://github.com/lbcb-sci/raven.git /raven
 
 # Build Raven
-RUN make
+WORKDIR /raven
+RUN cmake -S ./ -B./build -DRAVEN_BUILD_EXE=1 -DCMAKE_BUILD_TYPE=Release
+RUN cmake --build build
 
-# Add Raven to PATH
-ENV PATH="/raven-1.0.1/bin:${PATH}"
+# Set PATH environment variable
+ENV PATH="/raven/bin:${PATH}"
 
-# Set entry point
-ENTRYPOINT ["raven"]
+# Set default command to run Raven
+CMD ["raven"]
