@@ -7,15 +7,16 @@ RUN dnf update -y && \
     dnf clean all
 
 # Clone Raven repository
-RUN git clone https://github.com/lbcb-sci/raven.git /raven
+RUN git clone https://github.com/lbcb-sci/raven.git /opt/raven
 
 # Build Raven
-WORKDIR /raven
+WORKDIR /opt/raven
 RUN cmake -S ./ -B./build -DRAVEN_BUILD_EXE=1 -DCMAKE_BUILD_TYPE=Release
 RUN cmake --build build
+RUN cmake --install ./build
 
 # Set PATH environment variable
-ENV PATH="/raven/bin:${PATH}"
+# ENV PATH="/opt/raven/bin:${PATH}"
 
 # Basic installation verification
 RUN raven --version
