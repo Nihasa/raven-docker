@@ -17,5 +17,8 @@ RUN cmake --build build
 # Set PATH environment variable
 ENV PATH="/raven/bin:${PATH}"
 
+# Basic installation verification
+RUN raven --version
+
 # Set default command to run Raven
-CMD ["raven"]
+ENTRYPOINT ["raven"]
